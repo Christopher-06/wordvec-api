@@ -70,7 +70,7 @@ async def get_vector(w : str):
             "status" : "ok", 
             "vector" : base64.b64encode(vector)
             }
-    except KeyError:
+    except:
         return {"status" : "failed", "msg" : f"Key {w} is not present"}
 
 @app.get("/most-similar")
@@ -85,7 +85,7 @@ async def get_most_similar(w : str):
             "status" : "ok", 
             "similar" : OBJECTS["WORD2VEC_MODEL"].most_similar(w)
             }
-    except KeyError:
+    except:
         return {"status" : "failed", "msg" : f"Key {w} is not present"}
 
 @app.get("/similarity")
@@ -98,7 +98,7 @@ async def get_similarity(w1 : str, w2 : str):
     try:
         similarity = OBJECTS["WORD2VEC_MODEL"].similarity(w1, w2)
         return {"status" : "ok", "similarity" : similarity.astype(float)}
-    except KeyError:
+    except:
         return {"status" : "failed", "msg" : f"Key {w1} or {w2} is not present"}
 
 
@@ -114,7 +114,7 @@ async def post_vector(words : List[str]):
     for w in words:
         try:
             vectors[w] = base64.b64encode(OBJECTS["WORD2VEC_MODEL"].get_vector(w))
-        except KeyError:
+        except:
             continue # Not Found
 
     return {"status" : "ok", "vectors" : vectors}
@@ -130,7 +130,7 @@ async def post_most_similar(words : List[str]):
     for w in words:
         try:
             similars[w] = OBJECTS["WORD2VEC_MODEL"].most_similar(w)
-        except KeyError:
+        except:
             continue # Not Found
     
     return {"status" : "ok", "similar" : similars}
