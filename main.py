@@ -5,6 +5,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
+import numpy as np
 
 from config import *
 import helper
@@ -65,7 +66,7 @@ async def get_vector(w : str):
         return {"status" : "failed", "msg" : "No word2vec model is loaded"}
 
     try:
-        vector = OBJECTS["WORD2VEC_MODEL"].get_vector(w)
+        vector = np.array(OBJECTS["WORD2VEC_MODEL"].get_vector(w), dtype=np.float64)
         return {
             "status" : "ok", 
             "vector" : base64.b64encode(vector)
@@ -113,7 +114,8 @@ async def post_vector(words : List[str]):
     vectors = {}
     for w in words:
         try:
-            vectors[w] = base64.b64encode(OBJECTS["WORD2VEC_MODEL"].get_vector(w))
+            arr = np.array(OBJECTS["WORD2VEC_MODEL"].get_vector(w), dtype=np.float64)
+            vectors[w] = base64.b64encode(arr)
         except:
             continue # Not Found
 
@@ -135,6 +137,18 @@ async def post_most_similar(words : List[str]):
     
     return {"status" : "ok", "similar" : similars}
 
+@app.post("/similar-vector")
+async def get_similar_vector(vs : List[str], n : int = 7):
+    '''Find similar vectors like the given ones (Return them as words)'''
+    similars = {}
+
+    for index, v in enumerate(vs):
+        # Parse vector, find similar and append words to lists
+        d_bytes = base64.b64decode(v)
+        vector = np.frombuffer(d_bytes, dtype=np.float64)
+        similars[index] = OBJECTS["WORD2VEC_MODEL"].most_similar([vector], [], n)
+
+    return {"status" : "ok", "similar" : similars}
 
 
 

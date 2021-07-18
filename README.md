@@ -12,13 +12,13 @@ You have to enter a pretrained model name (Currently the glove gigaword model is
 
 
 ## API Methods
-Vectors will always be base64 encoded and have to be decoded and then parsed. Another documentation and testing platform is running at `http://127.0.0.1:8000/docs` (SwaggerUI).
+Vectors will always be base64 encoded (dtype=np.float64) and have to be decoded and then parsed. Another documentation and testing platform is running at `http://127.0.0.1:8000/docs` (SwaggerUI).
 - [GET] Get Vector of one Word: `curl --location --request GET 'http://127.0.0.1:8000/vector?w=hello'`
 - [POST] Get Vector of multiple Words: `curl --location --request POST 'http://127.0.0.1:8000/vector' --header 'Content-Type: application/json' --data-raw '[ "hello", "world" ]'`
 - [GET] Most Similar with one word: `curl --location --request GET 'http://127.0.0.1:8000/most-similar?w=hello'`
 - [POST] Most Similar with muliple words: `curl --location --request POST 'http://127.0.0.1:8000/most-similar'--header 'Content-Type: application/json'--data-raw '[ "hello", "world" ]'`
 - [GET] Similarity between two words: `curl --location --request GET 'http://127.0.0.1:8000/similarity?w1=hello&w2=world'`
-
+ - [POST] Find Similar Word-Vectors: `curl --location --request POST 'http://127.0.0.1:8000/similar-vector?n=5'--header 'Content-Type: application/json'--data-raw '[ "BASE_64_ENCODED_VECTOR" ]'`
 
 <br/>
 

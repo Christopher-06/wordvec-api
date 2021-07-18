@@ -3,3 +3,4 @@ uvicorn
 gensim
 fasttext
 python-Levenshtein
+numpy
